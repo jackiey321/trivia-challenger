@@ -1,8 +1,67 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+html {
+  height: 100%;
+  margin: 0;
 }
 
-a {
-  color: #00B7FF;
+body {
+  padding: 50px;
+  font: 18px "Ubuntu", Helvetica, Arial, sans-serif;
+  color: white;
+  background-color: black;
+  height: 70%;
+  margin: auto;
+}
+
+.alt-font {
+  font-family: "Lilita One", Helvetica, Arial, sans-serif;
+}
+
+hr {
+  height: 2px;
+  background-color: #11e3ff;
+  border: none;
+}
+
+h1 {
+  color: hotpink;
+}
+
+input {
+  font-size: 24px;
+  font-family: "Ubuntu", Helvetica, Arial, sans-serif;
+  text-align: center;
+}
+
+#welcome {
+  font-size: 80px;
+  margin: 10px;
+  margin-bottom: 20px;
+}
+
+#main {
+  border: 2px solid #11e3ff;
+  border-radius: 30px;
+  padding: 4%;
+  margin: auto;
+  height: 100%;
+  text-align: center;
+}
+
+#name {
+  margin-bottom: 20px;
+}
+
+#start-form {
+  margin-top: 30px;
+}
+
+#start-submit {
+  margin-top: 20px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: white;
+  background-color: hotpink;
+  border: 2px solid #11e3ff;
+  border-radius: 40px;
 }

@@ -1,5 +1,12 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  #main
+    h1(id="welcome", class="alt-font") TRIVIA<br>CHALLENGER!
+    hr
+    form(id="start-form", action="/start", method="post")
+      label(id="name-label", for="name") Your Name
+      br
+      input(id="name", type="text", name="name")
+      p You have 10 minutes to answer as many questions as possible.<br>Good luck!
+      input(id="start-submit", type="submit", value="START")
