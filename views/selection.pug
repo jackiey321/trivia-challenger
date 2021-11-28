@@ -1,0 +1,45 @@
+extends layout
+
+block content
+  #main
+    #top
+      span(id="score") Score --> 0  
+      span(id="time") Time --> 10:00
+    h1(class="alt-font") Your Next Question...
+    hr
+    form(id="selection-form" action="/question" method="post")
+      p Category
+      #categories
+        div
+          input(type="radio" id="general" name="category" value="general" required)
+          label(for="general")  General
+        div 
+          input(type="radio" id="art" name="category" value="art")
+          label(for="art")  Art
+        div 
+          input(type="radio" id="celebrities" name="category" value="celebrities")
+          label(for="celebrities")  Celebrities
+        div
+          input(type="radio" id="film" name="category" value="film")
+          label(for="film")  Film
+        div
+          input(type="radio" id="music" name="category" value="music")
+          label(for="music")  Music
+        div
+          input(type="radio" id="science" name="category" value="science")
+          label(for="science")  Science
+        div
+          input(type="radio" id="sports" name="category" value="sports")
+          label(for="sports")  Sports
+      p Difficulty
+      #difficulties
+        div
+          input(type="radio" id="easy" name="difficulty" value="easy" required)
+          label(for="easy")  Easy
+        div
+          input(type="radio" id="medium" name="difficulty" value="medium")
+          label(for="medium")  Medium
+        div
+          input(type="radio" id="hard" name="difficulty" value="hard")
+          label(for="hard")  Hard
+      input(class="submit" type="submit" value="GO")
