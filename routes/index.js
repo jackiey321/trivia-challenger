@@ -3,17 +3,20 @@ var router = express.Router();
 var he = require('he');
 
 let name;
+let score;
 let answer;
+let difficulty;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  score = 0;
   res.render('index', { title: 'TRIVIA CHALLENGER' });
 });
 
 /* POST question selection page. */
 router.post('/selection', function(req, res, next) {
   name = req.body.name;
-  res.render('selection');
+  res.render('selection', { score: score });
 });
 
 function categoryIndex(category) {
@@ -48,7 +51,7 @@ function makeChoices(correct, incorrect) {
 /* POST question selection page. */
 router.post('/question', async function(req, res, next) {
   const category = req.body.category;
-  const difficulty = req.body.difficulty;
+  difficulty = req.body.difficulty;
   
   const cIndex = categoryIndex(category);
   const apiRes = await getQuestion(cIndex, difficulty);
@@ -58,19 +61,31 @@ router.post('/question', async function(req, res, next) {
   const incorrect = apiRes["results"][0]["incorrect_answers"];
   const choices = makeChoices(answer, incorrect);
 
-  res.render('question', { question: question, choices: choices});
+  res.render('question', { question: question, choices: choices, score: score });
 });
+
+function getPoints() {
+  if(difficulty === "easy") {
+    return 10;
+  }
+  else if(difficulty === "medium") {
+    return 30;
+  }
+  else {
+    return 50;
+  }
+}
 
 /* POST question selection page. */
 router.post('/check', function(req, res, next) {
-  const choice = req.body.submit;
-  console.log(req.body);
+  const choice = req.body.choice;
   if(choice === answer) {
-    res.render('check', {increment: 50});
+    score += getPoints();
   }
   else {
-    res.render('check', {increment: -50});
+    score -= getPoints();
   }
+  res.render('check', {score: score});
 });
 
 module.exports = router;

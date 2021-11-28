@@ -88,7 +88,7 @@ form {
   justify-content: space-between;
 }
 
-#categories div, #difficulties div, #choices input {
+#categories div, #difficulties div, #choices div {
   font-size: 20px;
   margin-right: 20px;
   padding: 5px 10px;

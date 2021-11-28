@@ -3,12 +3,14 @@ extends layout
 block content
   #main
     #top
-      span(id="score") Score --> 0  
+      span(id="score") Score --> #{score}
       span(id="time") Time --> 10:00
     h1(class="alt-font") #{question}
     hr
     form(id="question-form" action="/check" method="post")
       #choices
         each choice in choices
-          //- input(class="submit", type="button", value=choice)
-          //- FIX!!
+          div
+            input(type="radio" id=choice name="choice" value=choice required)
+            label(for=choice)  #{choice}
+      input(class="submit" type="submit" value="SUBMIT")
