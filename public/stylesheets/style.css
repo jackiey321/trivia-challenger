@@ -51,12 +51,12 @@ input {
   margin-bottom: 20px;
 }
 
-#start-form {
+form {
   margin-top: 30px;
 }
 
-#start-submit {
-  margin-top: 20px;
+.submit {
+  margin-top: 30px;
   padding: 5px;
   padding-left: 10px;
   padding-right: 10px;
@@ -64,4 +64,36 @@ input {
   background-color: hotpink;
   border: 2px solid #11e3ff;
   border-radius: 40px;
+}
+
+#top {
+  margin: auto;
+  width: 20%;
+  display: flex;
+  justify-content: space-between;
+}
+
+#selection-form {
+  text-align: left;
+}
+
+#categories, #difficulties, #choices {
+  display: flex;
+}
+
+#choices {
+  max-width: 80%;
+  margin: auto;
+  margin-top: 40px;
+  justify-content: space-between;
+}
+
+#categories div, #difficulties div, #choices input {
+  font-size: 20px;
+  margin-right: 20px;
+  padding: 5px 10px;
+  color: black;
+  background-color: white;
+  border: 2px solid #11e3ff;
+  border-radius: 10px;
 }
