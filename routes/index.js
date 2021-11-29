@@ -3,6 +3,13 @@ var router = express.Router();
 var he = require('he');
 var Timer = require("easytimer.js").Timer;
 
+// Mongoose connection and collection
+const mongoose = require('mongoose');
+const db = mongoose.connection;
+const Schema = mongoose.Schema;
+const mySchema = new Schema({_id: String, score: Number}, {collection: 'scores'});
+const MyModel = mongoose.model('scores', mySchema );
+
 let name;
 let score;
 let answer;
@@ -73,7 +80,24 @@ router.post('/question', async function(req, res, next) {
     res.render('question', { question: question, choices: choices, score: score });
   }
   else {
-    res.render('rankings', {name: name, score: score, rank: 5, total: 10});
+    const query = { _id: name };
+    const update = { $set: { _id: name, score: score }};
+    const options = { upsert: true };
+    await MyModel.updateOne(query, update, options);
+    const pipeline = [
+      { $sort: { score: -1 } }
+    ];
+    const cursor = await MyModel.aggregate(pipeline);
+    console.log(cursor)
+    let rank = 0;
+    for await (const doc of cursor) {
+      rank++;
+      if(doc._id === name) {
+        break;
+      }
+    }
+    const total = await MyModel.countDocuments();
+    res.render('rankings', {name: name, score: score, rank: rank, total: total});
   }
 });
 
@@ -90,7 +114,7 @@ function getPoints() {
 }
 
 /* POST question selection page. */
-router.post('/check', function(req, res, next) {
+router.post('/check', async function(req, res, next) {
   if(time !== 0) {
     const choice = req.body.choice;
     if(choice === answer) {
@@ -102,7 +126,24 @@ router.post('/check', function(req, res, next) {
     res.render('selection', {score: score});
   }
   else {
-    res.render('rankings', {name: name, score: score, rank: 5, total: 10});
+    const query = { _id: name };
+    const update = { $set: { _id: name, score: score }};
+    const options = { upsert: true };
+    await MyModel.updateOne(query, update, options);
+    const pipeline = [
+      { $sort: { score: -1 } }
+    ];
+    const cursor = await MyModel.aggregate(pipeline);
+    console.log(cursor)
+    let rank = 0;
+    for await (const doc of cursor) {
+      rank++;
+      if(doc._id === name) {
+        break;
+      }
+    }
+    const total = await MyModel.countDocuments();
+    res.render('rankings', {name: name, score: score, rank: rank, total: total});
   }
 });
 
