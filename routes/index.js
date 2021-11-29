@@ -1,21 +1,29 @@
 var express = require('express');
 var router = express.Router();
 var he = require('he');
+var Timer = require("easytimer.js").Timer;
 
 let name;
 let score;
 let answer;
 let difficulty;
+let time = 60;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   score = 0;
+  time = 60;
   res.render('index', { title: 'TRIVIA CHALLENGER' });
 });
 
 /* POST question selection page. */
 router.post('/selection', function(req, res, next) {
   name = req.body.name;
+  const timer = new Timer();
+  timer.start({countdown: true, startValues: {seconds: 60}, target: {seconds: 0}});
+  timer.addEventListener('targetAchieved', function (e) {
+    time = 0;
+  });
   res.render('selection', { score: score });
 });
 
@@ -50,18 +58,23 @@ function makeChoices(correct, incorrect) {
 
 /* POST question selection page. */
 router.post('/question', async function(req, res, next) {
-  const category = req.body.category;
-  difficulty = req.body.difficulty;
+  if(time !== 0) {
+    const category = req.body.category;
+    difficulty = req.body.difficulty;
+    
+    const cIndex = categoryIndex(category);
+    const apiRes = await getQuestion(cIndex, difficulty);
+    console.log(apiRes);
+    const question = decode(apiRes["results"][0]["question"]);
+    answer = apiRes["results"][0]["correct_answer"];
+    const incorrect = apiRes["results"][0]["incorrect_answers"];
+    const choices = makeChoices(answer, incorrect);
   
-  const cIndex = categoryIndex(category);
-  const apiRes = await getQuestion(cIndex, difficulty);
-  console.log(apiRes);
-  const question = decode(apiRes["results"][0]["question"]);
-  answer = apiRes["results"][0]["correct_answer"];
-  const incorrect = apiRes["results"][0]["incorrect_answers"];
-  const choices = makeChoices(answer, incorrect);
-
-  res.render('question', { question: question, choices: choices, score: score });
+    res.render('question', { question: question, choices: choices, score: score });
+  }
+  else {
+    res.render('rankings', {name: name, score: score, rank: 5, total: 10});
+  }
 });
 
 function getPoints() {
@@ -78,14 +91,19 @@ function getPoints() {
 
 /* POST question selection page. */
 router.post('/check', function(req, res, next) {
-  const choice = req.body.choice;
-  if(choice === answer) {
-    score += getPoints();
+  if(time !== 0) {
+    const choice = req.body.choice;
+    if(choice === answer) {
+      score += getPoints();
+    }
+    else {
+      score -= getPoints();
+    }
+    res.render('selection', {score: score});
   }
   else {
-    score -= getPoints();
+    res.render('rankings', {name: name, score: score, rank: 5, total: 10});
   }
-  res.render('check', {score: score});
 });
 
 module.exports = router;
