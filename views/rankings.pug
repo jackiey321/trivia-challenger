@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  #main
+    h1 Time's Up! 
+    hr
+    div
+      h2(class="underline") Final Score
+      h3 #{score}
+    div 
+      h2(class="underline") #{name}'s Ranking 
+      h3 #{rank}<br>Out Of #{total}
+    form(action="/" method="get")
+      input(class="submit" type="submit" value="RETRY") 

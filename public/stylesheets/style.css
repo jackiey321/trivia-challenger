@@ -97,3 +97,7 @@ form {
   border: 2px solid #11e3ff;
   border-radius: 10px;
 }
+
+.underline {
+  text-decoration: underline;
+}
