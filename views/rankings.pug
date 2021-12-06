@@ -4,11 +4,18 @@ block content
   #main
     h1 Time's Up! 
     hr
-    div
-      h2(class="underline") Final Score
-      h3 #{score}
-    div 
-      h2(class="underline") #{name}'s Ranking 
-      h3 #{rank}<br>Out Of #{total}
+    #results
+      #left
+        div
+          h2(class="underline") Final Score
+          h3 #{score}
+        div 
+          h2(class="underline") #{name}'s Ranking 
+          h3 #{rank}<br>Out Of #{total}
+      #right
+        h2 Reigning Champions
+        ol
+          each champ in reigning
+            li #{champ._id}: #{champ.score}
     form(action="/" method="get")
       input(class="submit" type="submit" value="RETRY") 

@@ -101,3 +101,16 @@ form {
 .underline {
   text-decoration: underline;
 }
+
+#results {
+  margin: auto;
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+}
+
+#left, #right {
+  width: 30%;
+  text-align: left;
+}
+

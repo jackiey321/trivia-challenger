@@ -64,7 +64,6 @@ router.post('/question', async function(req, res, next) {
   
   const cIndex = categoryIndex(category);
   const apiRes = await getQuestion(cIndex, difficulty);
-  console.log(apiRes);
   const question = decode(apiRes["results"][0]["question"]);
   answer = apiRes["results"][0]["correct_answer"];
   const incorrect = apiRes["results"][0]["incorrect_answers"];
@@ -102,20 +101,28 @@ router.get('/rankings', async function(req, res, next) {
   const update = { $set: { _id: name, score: score }};
   const options = { upsert: true };
   await MyModel.updateOne(query, update, options);
-  const pipeline = [
+
+  const pipeline1 = [
     { $sort: { score: -1 } }
   ];
-  const cursor = await MyModel.aggregate(pipeline);
-  console.log(cursor)
+  const sorted = await MyModel.aggregate(pipeline1);
+
   let rank = 0;
-  for await (const doc of cursor) {
+  for await (const doc of sorted) {
     rank++;
     if(doc._id === name) {
       break;
     }
   }
   const total = await MyModel.countDocuments();
-  res.render('rankings', {name: name, score: score, rank: rank, total: total});
+
+  const pipeline2 = [
+    { $sort: { score: -1 }},
+    { $limit: 3 }
+  ]
+  const reigning = await MyModel.aggregate(pipeline2);
+
+  res.render('rankings', { name: name, score: score, rank: rank, total: total, reigning: reigning });
 });
 
 module.exports = router;
