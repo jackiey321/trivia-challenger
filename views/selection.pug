@@ -1,10 +1,11 @@
 extends layout
 
 block content
+  script(type="module" src="/javascripts/timer.js")
   #main
     #top
       span(id="score") Score --> #{score}  
-      span(id="time") Time --> 10:00
+      span(id="time") Time --> #{time}s
     h1(class="alt-font") Your Next Question...
     hr
     form(id="selection-form" action="/question" method="post")
