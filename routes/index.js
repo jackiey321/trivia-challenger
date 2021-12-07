@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var he = require('he');
+const axios = require('axios').default;
 
 // Mongoose connection and collection
 const mongoose = require('mongoose');
@@ -46,13 +47,14 @@ function categoryIndex(category) {
  * @returns {Object} parsed object of the api response (question + answer choices)
  */
 async function getQuestion(category, difficulty) {
-  const fetch = (url) => import('node-fetch').then(({default: fetch}) => fetch(url)); // import fetch
-  const response = await fetch("https://opentdb.com/api.php?amount=1&category=" + category + "&difficulty=" + difficulty);
-  if(!response.ok) {
-    throw new Error("Error status: " + response.status);
+  try {
+    const response = await axios.get("https://opentdb.com/api.php?amount=1&category=" + category + "&difficulty=" + difficulty);
+    const result = await response.data;
+    return result;
   }
-  const result = await response.text();
-  return JSON.parse(result); 
+  catch (error) {
+    console.error(error);
+  }
 }
 
 /**
@@ -167,4 +169,13 @@ router.get('/rankings', async function(req, res, next) {
   res.render('rankings', { name: name, score: score, rank: rank, total: total, reigning: reigning });
 });
 
-module.exports = router;
+if (typeof module != 'undefined') {
+  module.exports = {
+      router: router,
+      categoryIndex: categoryIndex,
+      getQuestion: getQuestion,
+      decode: decode,
+      makeChoices: makeChoices,
+      getPoints: getPoints
+  };
+}
