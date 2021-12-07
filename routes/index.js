@@ -12,8 +12,6 @@ const MyModel = mongoose.model('scores', mySchema );
 
 let name;
 let score;
-let answer;
-let difficulty;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -88,7 +86,8 @@ function makeChoices(correct, incorrect) {
 /* POST question page. */
 router.post('/question', async function(req, res, next) {
   const category = req.body.category;
-  difficulty = req.body.difficulty; // store difficulty for score calculation
+  const difficulty = req.body.difficulty; 
+  res.cookie("difficulty", difficulty, { httpOnly: false }); // store difficulty for score calculation
   
   // get question
   const cIndex = categoryIndex(category);
@@ -96,7 +95,8 @@ router.post('/question', async function(req, res, next) {
   const question = decode(apiRes["results"][0]["question"]);
   
   // get answer choices
-  answer = apiRes["results"][0]["correct_answer"]; // store correct answer for checking accuracy
+  const answer = apiRes["results"][0]["correct_answer"]; 
+  res.cookie("answer", answer, { httpOnly: false }); // store correct answer for checking accuracy
   const incorrect = apiRes["results"][0]["incorrect_answers"];
   const choices = makeChoices(answer, incorrect);
 
@@ -106,9 +106,10 @@ router.post('/question', async function(req, res, next) {
 /**
  * Returns the number of points associated with the selected difficulty level
  * 
+ * @param {String} difficulty selected difficulty level
  * @returns {Number} the number of points
  */
-function getPoints() {
+function getPoints(difficulty) {
   if(difficulty === "easy") {
     return 10;
   }
@@ -123,12 +124,13 @@ function getPoints() {
 /* POST question selection page. */
 router.post('/check', function(req, res, next) {
   const choice = req.body.choice;
+  const difficulty = req.cookies["difficulty"];
   // updates points based on answer correctness
-  if(choice === answer) {
-    score += getPoints();
+  if(choice === req.cookies["answer"]) {
+    score += getPoints(difficulty);
   }
   else {
-    score -= getPoints();
+    score -= getPoints(difficulty);
   }
   res.render('selection', { score: score, time: req.cookies["time"] });
 });
