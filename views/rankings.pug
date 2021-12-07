@@ -16,6 +16,6 @@ block content
         h2(class="underline") Reigning Champions
         ol
           each champ in reigning
-            li #{champ._id}: #{champ.score}
+            li #{champ._id} (Score: #{champ.score})
     form(action="/" method="get")
       input(class="submit" type="submit" value="RETRY") 
