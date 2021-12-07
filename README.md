@@ -24,9 +24,10 @@ One way my application uses cookies is to help store information that is needed 
 The application I built relies on the MongoDB database for storing all past players and their scores. Each document in the database is identified by the name of the player. I did this so that the player’s name would function somewhat similarly to a username (true account/username authentication was not implemented). Whenever a player plays, their score is updated to their new current score if they already exist in the database. Otherwise, a new record is inserted for the player. These pieces of information are stored in order to help determine how the player currently ranks against everyone who has played in the past. By sorting the documents by their score, the application can calculate the rank of the given player based on where they appear. Counting all the documents helps determine the total number of players for better ranking context. Lastly, the database also makes it possible to display the current reigning champions and how well they scored by sorting and limiting the documents. This provides information for people curious in knowing how well they need to score in order to reach the top.
 ## HTML Validation
 Home Page
-
+![Index Validation](index-val.png)
 Selection Page
-
+![Selection Validation](selection-val.png)
 Question Page
-
-Ranking Page
+![Question Validation](question-val.png)
+Rankings Page
+![Rankings Validation](rankings-val.png)
