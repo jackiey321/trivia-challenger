@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var he = require('he');
-const axios = require('axios').default;
+var axios = require('axios').default;
 
 // Mongoose connection and collection
 const mongoose = require('mongoose');
