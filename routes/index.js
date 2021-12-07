@@ -23,7 +23,7 @@ router.get('/', function(req, res, next) {
 router.post('/selection', function(req, res, next) {
   name = req.body.name; // store the player's name
   res.cookie("time", "60", { httpOnly: false }); // restart the amount of time
-  res.render('selection', { score: score, time: "60" }); 
+  res.render('selection', { title: 'TRIVIA CHALLENGER', score: score, time: "60" }); 
 });
 
 /**
@@ -100,7 +100,7 @@ router.post('/question', async function(req, res, next) {
   const incorrect = apiRes["results"][0]["incorrect_answers"];
   const choices = makeChoices(answer, incorrect);
 
-  res.render('question', { question: question, choices: choices, score: score, time: req.cookies["time"] });
+  res.render('question', { title: 'TRIVIA CHALLENGER', question: question, choices: choices, score: score, time: req.cookies["time"] });
 });
 
 /**
@@ -132,7 +132,7 @@ router.post('/check', function(req, res, next) {
   else {
     score -= getPoints(difficulty);
   }
-  res.render('selection', { score: score, time: req.cookies["time"] });
+  res.render('selection', { title: 'TRIVIA CHALLENGER', score: score, time: req.cookies["time"] });
 });
 
 /* GET final results and rankings page. */
@@ -168,7 +168,7 @@ router.get('/rankings', async function(req, res, next) {
   ]
   const reigning = await MyModel.aggregate(pipeline2);
 
-  res.render('rankings', { name: name, score: score, rank: rank, total: total, reigning: reigning });
+  res.render('rankings', { title: 'TRIVIA CHALLENGER', name: name, score: score, rank: rank, total: total, reigning: reigning });
 });
 
 if (typeof module != 'undefined') {
