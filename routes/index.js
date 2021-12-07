@@ -10,20 +10,17 @@ const Schema = mongoose.Schema;
 const mySchema = new Schema({_id: String, score: Number}, {collection: 'scores'});
 const MyModel = mongoose.model('scores', mySchema );
 
-let name;
-let score;
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  score = 0; // reset score for each game
+  res.cookie("score", "0", { httpOnly: false });; // reset player score to 0
   res.render('index', { title: 'TRIVIA CHALLENGER' });
 });
 
 /* POST question selection page. */
 router.post('/selection', function(req, res, next) {
-  name = req.body.name; // store the player's name
+  res.cookie("name", req.body.name, { httpOnly: false }); // store the player's name
   res.cookie("time", "60", { httpOnly: false }); // restart the amount of time
-  res.render('selection', { title: 'TRIVIA CHALLENGER', score: score, time: "60" }); 
+  res.render('selection', { title: 'TRIVIA CHALLENGER', score: req.cookies["score"], time: "60" }); 
 });
 
 /**
@@ -100,7 +97,7 @@ router.post('/question', async function(req, res, next) {
   const incorrect = apiRes["results"][0]["incorrect_answers"];
   const choices = makeChoices(answer, incorrect);
 
-  res.render('question', { title: 'TRIVIA CHALLENGER', question: question, choices: choices, score: score, time: req.cookies["time"] });
+  res.render('question', { title: 'TRIVIA CHALLENGER', question: question, choices: choices, score: req.cookies["score"], time: req.cookies["time"] });
 });
 
 /**
@@ -125,6 +122,7 @@ function getPoints(difficulty) {
 router.post('/check', function(req, res, next) {
   const choice = req.body.choice;
   const difficulty = req.cookies["difficulty"];
+  let score = parseInt(req.cookies["score"]);
   // updates points based on answer correctness
   if(choice === req.cookies["answer"]) {
     score += getPoints(difficulty);
@@ -132,14 +130,15 @@ router.post('/check', function(req, res, next) {
   else {
     score -= getPoints(difficulty);
   }
+  res.cookie("score", score.toString(), { httpOnly: false });
   res.render('selection', { title: 'TRIVIA CHALLENGER', score: score, time: req.cookies["time"] });
 });
 
 /* GET final results and rankings page. */
 router.get('/rankings', async function(req, res, next) {
   // upsert the score for the given name
-  const query = { _id: name };
-  const update = { $set: { _id: name, score: score }};
+  const query = { _id: req.cookies["name"] };
+  const update = { $set: { _id: req.cookies["name"], score: req.cookies["score"] }};
   const options = { upsert: true };
   await MyModel.updateOne(query, update, options);
 
@@ -153,7 +152,7 @@ router.get('/rankings', async function(req, res, next) {
   let rank = 0;
   for await (const doc of sorted) {
     rank++;
-    if(doc._id === name) {
+    if(doc._id === req.cookies["name"]) {
       break;
     }
   }
@@ -168,7 +167,7 @@ router.get('/rankings', async function(req, res, next) {
   ]
   const reigning = await MyModel.aggregate(pipeline2);
 
-  res.render('rankings', { title: 'TRIVIA CHALLENGER', name: name, score: score, rank: rank, total: total, reigning: reigning });
+  res.render('rankings', { title: 'TRIVIA CHALLENGER', name: req.cookies["name"], score: req.cookies["score"], rank: rank, total: total, reigning: reigning });
 });
 
 if (typeof module != 'undefined') {
