@@ -4,12 +4,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+require('dotenv').config();
 
 var indexRouter = require('./routes/index').router;
 var usersRouter = require('./routes/users');
 
 //Import the mongoose module
-var mongoDB = 'mongodb+srv://trivia:challenger@cluster0.ev4f6.mongodb.net/trivia-challenger?retryWrites=true&w=majority';
+var mongoDB = process.env.MONGO_URL;
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 //Get the default connection
 var db = mongoose.connection;
